@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">OfPay symbol</title>
+  <desc id="desc">A centred cursive lowercase f with an upswept symmetrical crossbar and a clockwise tail blended into a circular O.</desc>
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Complete O: deliberately heavier than the internal f for a stable silhouette. -->
+    <circle cx="50" cy="50" r="42" stroke-width="7.5"/>
+
+    <!-- Lowercase f: upper hook remains free; tail approaches the ring on a clockwise tangent. -->
+    <path
+      d="M62 29
+         C59 23 53 21.5 48.5 26
+         C43 31.5 42 43 41 56
+         C40 70 37 80 31.5 84
+         C29.7 85.3 28.8 85.9 29.8 86.8"
+      stroke-width="7"
+    />
+
+    <!-- Symmetrical shallow smile: both terminals rise; equal reach and clearance. -->
+    <path d="M27.5 47.5 Q50 56 72.5 47.5" stroke-width="5.75"/>
+  </g>
+</svg>
