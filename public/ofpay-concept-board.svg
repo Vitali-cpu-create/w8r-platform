@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Ten OfPay symbol concepts</title>
+  <desc id="desc">A numbered two-row comparison board showing ten different ways to combine a capital O with a lowercase f.</desc>
+  <rect width="1600" height="760" fill="#f7f4ee"/>
+  <text x="70" y="56" fill="#171317" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="3">OFPAY GLYPH STUDY — ROUND 01</text>
+  <path d="M70 76H1530" stroke="#d9d0c2"/>
+  <g fill="none" stroke="#171317" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 1: pure O with independent geometric f -->
+    <g transform="translate(65 105)">
+      <circle cx="100" cy="100" r="68"/>
+      <path d="M132 56c-5-7-12-10-21-10-15 0-24 10-24 28v79M64 91h55"/>
+    </g>
+    <!-- 2: upper hook touches a complete O -->
+    <g transform="translate(365 105)">
+      <circle cx="100" cy="100" r="68"/>
+      <path d="M148 52c-9-4-17-6-25-6-22 0-32 11-32 31v76M65 92h58"/>
+    </g>
+    <!-- 3: crossbar terminates into right side of O -->
+    <g transform="translate(665 105)">
+      <circle cx="100" cy="100" r="68"/>
+      <path d="M128 53c-4-5-10-8-18-8-14 0-22 10-22 28v80M64 93h104"/>
+    </g>
+    <!-- 4: crossbar bridges both sides -->
+    <g transform="translate(965 105)">
+      <ellipse cx="100" cy="100" rx="72" ry="66"/>
+      <path d="M128 54c-5-6-11-9-19-9-14 0-22 10-22 28v80M28 94h144"/>
+    </g>
+    <!-- 5: f hook becomes an anti-clockwise open O -->
+    <g transform="translate(1265 105)">
+      <path d="M145 51A68 68 0 1 0 165 82"/>
+      <path d="M145 51c-11-4-20-6-28-6-19 0-29 11-29 31v77M64 93h58"/>
+    </g>
+    <!-- 6: humanist circular O and curved f -->
+    <g transform="translate(65 415)" stroke-width="7">
+      <ellipse cx="100" cy="100" rx="70" ry="66"/>
+      <path d="M139 51c-8-7-18-9-27-6-15 5-21 18-18 37l10 70M67 96c17-5 36-7 57-5"/>
+    </g>
+    <!-- 7: compact bold micro-mark -->
+    <g transform="translate(365 415)" stroke-width="12">
+      <circle cx="100" cy="100" r="61"/>
+      <path d="M126 61c-4-4-9-6-15-6-12 0-18 8-18 21v67M72 94h45"/>
+    </g>
+    <!-- 8: softly squared fintech container -->
+    <g transform="translate(665 415)">
+      <rect x="34" y="34" width="132" height="132" rx="43"/>
+      <path d="M130 57c-5-6-12-9-20-9-15 0-23 10-23 27v78M64 94h58"/>
+    </g>
+    <!-- 9: continuous ribbon construction -->
+    <g transform="translate(965 415)">
+      <path d="M91 152V77c0-19 10-30 29-30 9 0 18 3 25 8A67 67 0 1 1 72 41M66 93h61"/>
+    </g>
+    <!-- 10: open O with optically centred independent f -->
+    <g transform="translate(1265 415)">
+      <path d="M147 49A68 68 0 1 0 164 76"/>
+      <path d="M130 53c-5-6-11-8-19-8-15 0-23 10-23 28v80M64 93h57"/>
+    </g>
+  </g>
+  <g fill="#171317" font-family="Arial, sans-serif" font-size="17" font-weight="700">
+    <text x="245" y="330">1</text><text x="545" y="330">2</text><text x="845" y="330">3</text><text x="1145" y="330">4</text><text x="1445" y="330">5</text>
+    <text x="245" y="640">6</text><text x="545" y="640">7</text><text x="845" y="640">8</text><text x="1145" y="640">9</text><text x="1435" y="640">10</text>
+  </g>
+  <g fill="#857c70" font-family="Arial, sans-serif" font-size="10" letter-spacing="1.2">
+    <text x="95" y="350">INDEPENDENT</text><text x="395" y="350">HOOK TOUCH</text><text x="695" y="350">RIGHT BRIDGE</text><text x="995" y="350">FULL BRIDGE</text><text x="1295" y="350">HOOK FLOW</text>
+    <text x="95" y="660">HUMANIST</text><text x="395" y="660">MICRO BOLD</text><text x="695" y="660">SOFT SQUARE</text><text x="995" y="660">ONE STROKE</text><text x="1295" y="660">OPEN OPTICAL</text>
+  </g>
+</svg>
