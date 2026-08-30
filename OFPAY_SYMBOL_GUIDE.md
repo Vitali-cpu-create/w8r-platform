@@ -4,9 +4,10 @@ The OfPay symbol is a lowercase **f** nested inside a circular **O**. It is inte
 
 ## Primary construction
 
-- The outer **O** represents an exchange of value in motion. It begins where the **f** joins the ring at six o'clock, flows clockwise and stops 2.5 line widths before closing.
+- The outer **O** represents an exchange of value in motion. The upper hook of the **f** joins the ring near one-thirty, then flows anti-clockwise and stops 2.5 line widths before closing.
 - The inner lowercase **f** supplies the spoken “of” sound and distinguishes the mark from `@`.
 - The crossbar is deliberately wide so the **f** remains readable at small interface sizes.
+- Moving the junction to the upper hook keeps the glyph recognisably **Of** and prevents the lower stem from resembling the tail of a **Q**.
 - The measured 2.5-line-width opening prevents the mark from reading as a generic enclosed monogram and gives it a repeatable typographic construction.
 - The monoline construction keeps the symbol compatible with type, signage, QR interfaces and payment buttons.
 

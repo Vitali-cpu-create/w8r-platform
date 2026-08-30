@@ -2,9 +2,9 @@
   <title id="title">OfPay solid symbol</title>
   <desc id="desc">A solid lowercase f nested inside a circular O.</desc>
   <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Small-size version: 25-unit opening equals 2.5 × the 10-unit stroke. -->
-    <path d="M50 93A43 43 0 1 1 73.6 85.9"/>
-    <path d="M70 27c-3.8-4.5-8.6-6.8-14.3-6.8-10.4 0-16.7 7.1-16.7 18.8v37.2c0 9 3.7 14.6 11 16.8"/>
+    <!-- The upper hook joins the ring; the 25-unit opening equals 2.5 × the 10-unit stroke. -->
+    <path d="M80.4 19.6A43 43 0 1 0 92.1 41.3"/>
+    <path d="M80.4 19.6c-7 0-11.8 0-16 .4C47.6 21.3 39 28 39 39v39"/>
     <path d="M31 48h38"/>
   </g>
 </svg>
