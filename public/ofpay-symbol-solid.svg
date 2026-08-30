@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">OfPay solid symbol</title>
+  <desc id="desc">A solid lowercase f nested inside a circular O.</desc>
+  <path fill="currentColor" fill-rule="evenodd" d="M50 4a46 46 0 1 0 0 92 46 46 0 0 0 0-92Zm0 8a38 38 0 1 1 0 76 38 38 0 0 1 0-76Zm5.6 5.7c7.1 0 13.1 2.8 17.2 7.8l-6.2 5.1c-2.5-3.1-6.2-4.9-11-4.9-7.3 0-11.6 4.8-11.6 13.5V44h23v8H44v26h-8V52h-7v-8h7v-4.8c0-13.2 7.5-21.5 19.6-21.5Z"/>
+</svg>
