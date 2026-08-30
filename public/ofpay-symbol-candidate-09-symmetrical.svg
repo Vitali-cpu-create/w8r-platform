@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">OfPay symmetrical curved-crossbar symbol</title>
+  <desc id="desc">An integrated lowercase f with a restrained symmetrical curved crossbar inside a circular O.</desc>
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="50" cy="50" r="42" stroke-width="8"/>
+    <path d="M56 9c-7 9-10 21-12 34l-5 28c-2 10-6 16-11 19" stroke-width="7"/>
+    <path d="M25 52Q50 44 75 52" stroke-width="6"/>
+  </g>
+</svg>
