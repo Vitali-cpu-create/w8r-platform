@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">OfPay disciplined integrated symbol</title>
+  <desc id="desc">A lowercase f with a detached crossbar and a curved stem integrated into the top and bottom of a circular O.</desc>
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="50" cy="50" r="42" stroke-width="8"/>
+    <path d="M56 9c-7 9-10 21-12 34l-5 28c-2 10-6 16-11 19" stroke-width="7"/>
+    <path d="M25 50h50" stroke-width="6"/>
+  </g>
+</svg>
