@@ -3,7 +3,7 @@
   <desc id="desc">A solid lowercase f nested inside a circular O.</desc>
   <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
     <!-- Small-size version: 25-unit opening equals 2.5 × the 10-unit stroke. -->
-    <path d="M50 93A43 43 0 1 0 26.4 85.9"/>
+    <path d="M50 93A43 43 0 1 1 73.6 85.9"/>
     <path d="M70 27c-3.8-4.5-8.6-6.8-14.3-6.8-10.4 0-16.7 7.1-16.7 18.8v37.2c0 9 3.7 14.6 11 16.8"/>
     <path d="M31 48h38"/>
   </g>
