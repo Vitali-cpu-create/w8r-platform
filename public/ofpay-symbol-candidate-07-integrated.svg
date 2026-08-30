@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">OfPay fully integrated cursive symbol</title>
+  <desc id="desc">A cursive lowercase f integrated into a circular O at its top, bottom and right side.</desc>
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="50" cy="50" r="42" stroke-width="8"/>
+    <path stroke-width="7" d="M55 9c-5 9-8 19-10 31l-5 29c-2 10-5 16-10 17-5 1-8-3-7-8 1-6 7-9 13-7 5 2 7 7 6 12-1 4-4 7-8 9"/>
+    <path stroke-width="7" d="M25 52c6-7 14-8 22-4 10 5 23 3 45 2"/>
+  </g>
+</svg>
