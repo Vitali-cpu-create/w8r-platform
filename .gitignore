@@ -42,3 +42,20 @@ yarn-error.log*
 /dev.log
 /dev.err.log
 /.publish-tools/
+
+# local creative exports and duplicated download artefacts
+/* - Copy*
+/*- Copy.*
+/BTLR — *.html
+/OFPAY_* - Copy.md
+/W8R_BRAND_KIT_MASTER.md
+/W8R_Investor_Deck_Canva*
+/build_w8r_canva_deck.mjs
+/canva_package/
+/btlr/
+/operations/
+/dist - Copy/
+/public - Copy/
+/dev - Copy.log
+/dev.err - Copy.log
+/public/ofpay-approved-mark.png

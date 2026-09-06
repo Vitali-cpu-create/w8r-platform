@@ -1,96 +1,17 @@
-"use client";
+import { getChatGPTUser } from "./chatgpt-auth";
+import W8RPlatform from "./w8r-platform";
 
-import { useEffect, useMemo, useState } from "react";
+export const dynamic = "force-dynamic";
 
-type View = "discover" | "market" | "nfts" | "sell" | "crm" | "ofpay" | "plugins";
-
-const products = [
-  { id: 1, name: "Aurelia Smart Ring", vendor: "NOVA OBJECTS", price: 289, type: "Physical", tone: "ring", badge: "Free express delivery" },
-  { id: 2, name: "Midnight Systems", vendor: "ORBITAL PRESS", price: 48, type: "Digital", tone: "book", badge: "Instant download" },
-  { id: 3, name: "Future Heirloom #042", vendor: "MAISON ONCHAIN", price: 620, type: "NFT", tone: "nft", badge: "Verified collection" },
-  { id: 4, name: "Nocturne Carryall", vendor: "ATELIER 88", price: 360, type: "Physical", tone: "bag", badge: "Only 4 remaining" },
-];
-
-const coins = [
-  { symbol: "BTC", name: "Bitcoin", rate: 176245.18, mark: "₿" },
-  { symbol: "ETH", name: "Ethereum", rate: 5984.61, mark: "◆" },
-  { symbol: "SOL", name: "Solana", rate: 278.42, mark: "S" },
-  { symbol: "STAT", name: "STAT Token", rate: 0.074, mark: "S" },
-  { symbol: "USDC", name: "USD Coin", rate: 1.53, mark: "$" },
-];
-
-function Brand() {
-  return <button className="brand" onClick={() => location.reload()} aria-label="W8R home"><span>W8R</span><small>HOW CAN WE SERVE YOU BETTER?</small></button>;
+export default async function Page() {
+  const user = await getChatGPTUser();
+  return <W8RPlatform viewer={user ? {
+    displayName: user.displayName,
+    email: user.email,
+    authenticated: true,
+  } : {
+    displayName: "Investor sandbox",
+    email: null,
+    authenticated: false,
+  }} />;
 }
-
-function CoinIcon({ coin, active = false }: { coin: typeof coins[number]; active?: boolean }) {
-  return <span className={`coin-icon ${active ? "active" : ""}`}>{coin.mark}</span>;
-}
-
-function Metric({ label, value, delta }: { label: string; value: string; delta: string }) {
-  return <div className="metric"><div><span>{label}</span><b>{value}</b></div><em>{delta}</em><div className="spark"><i/><i/><i/><i/><i/><i/></div></div>;
-}
-
-function ProductArt({ tone, type }: { tone: string; type: string }) {
-  return <div className={`product-art ${tone}`}><span className="art-glow"/><div className="art-object">{tone === "ring" ? "◯" : tone === "book" ? "M/S" : tone === "nft" ? "42" : "W8R"}</div><label>{type}</label></div>;
-}
-
-function PaymentModal({ product, close }: { product: typeof products[number]; close: () => void }) {
-  const [coin, setCoin] = useState(coins[0]);
-  const [seconds, setSeconds] = useState(30);
-  const [status, setStatus] = useState<"quote" | "sent">("quote");
-  useEffect(() => { setSeconds(30); const id = setInterval(() => setSeconds(s => s > 0 ? s - 1 : 0), 1000); return () => clearInterval(id); }, [coin]);
-  const amount = (product.price / coin.rate).toLocaleString("en-AU", { maximumFractionDigits: coin.symbol === "STAT" ? 2 : 6 });
-  return <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="OfPay crypto checkout">
-    <div className="payment-modal">
-      <button className="modal-close" onClick={close} aria-label="Close checkout">×</button>
-      <div className="checkout-head"><div><span className="eyebrow">SECURE CHECKOUT</span><h2>Pay with OfPay</h2></div><span className="secure">● LIVE QUOTE</span></div>
-      <div className="checkout-item"><ProductArt tone={product.tone} type={product.type}/><div><b>{product.name}</b><span>{product.vendor}</span></div><strong>A${product.price.toFixed(2)}</strong></div>
-      <p className="field-label">Choose your currency</p>
-      <div className="coin-row">{coins.map(c => <button key={c.symbol} className={coin.symbol === c.symbol ? "selected" : ""} onClick={() => setCoin(c)}><CoinIcon coin={c} active={coin.symbol === c.symbol}/><span>{c.symbol}</span></button>)}</div>
-      {status === "quote" ? <div className="quote-card">
-        <div className="qr" aria-label="Payment QR code"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div>
-        <div className="quote-copy"><span>Send exactly</span><h3>{amount} {coin.symbol}</h3><p>≈ A${product.price.toFixed(2)} · Network fee estimated at checkout</p><div className={`timer ${seconds < 8 ? "urgent" : ""}`}><span style={{width: `${seconds/30*100}%`}}/><b>{seconds}s</b> quote lock</div><button className="primary" disabled={seconds === 0} onClick={() => setStatus("sent")}>{seconds ? "Open wallet & pay" : "Refresh quote"}</button></div>
-      </div> : <div className="payment-success"><span>✓</span><h3>Payment request sent</h3><p>We’re watching the network. Your order confirms automatically after settlement.</p><button className="primary" onClick={close}>View order</button></div>}
-      <div className="trust-strip"><span>30-second price protection</span><span>Non-custodial handoff</span><span>Auditable receipt</span></div>
-    </div>
-  </div>;
-}
-
-function App() {
-  const [view, setView] = useState<View>("discover");
-  const [payment, setPayment] = useState<typeof products[number] | null>(null);
-  const [search, setSearch] = useState("");
-  const [toast, setToast] = useState("");
-  const [pluginStep, setPluginStep] = useState(1);
-  const visibleProducts = useMemo(() => products.filter(p => `${p.name} ${p.vendor} ${p.type}`.toLowerCase().includes(search.toLowerCase())), [search]);
-  const notify = (message: string) => { setToast(message); setTimeout(() => setToast(""), 2600); };
-  const nav = (next: View) => { setView(next); window.scrollTo({ top: 0, behavior: "smooth" }); };
-
-  return <main>
-    {toast && <div className="toast">✓ {toast}</div>}
-    <header><Brand/><nav>{[["discover","Discover"],["market","Marketplace"],["nfts","NFTs"],["sell","Sell on W8R"]].map(([id,label]) => <button key={id} className={view === id ? "active" : ""} onClick={() => nav(id as View)}>{label}</button>)}</nav><div className="header-actions"><button className="icon-btn" aria-label="Search" onClick={() => nav("market")}>⌕</button><button className="icon-btn" aria-label="Shopping bag" onClick={() => notify("Your bag is ready")}>◇<sup>2</sup></button><button className="account" onClick={() => nav("crm")}><span>DB</span><i>Daniel<br/><b>Merchant account</b></i></button></div></header>
-
-    {view === "discover" && <>
-      <section className="hero"><div className="hero-copy"><span className="eyebrow">THE MARKETPLACE, REIMAGINED</span><h1>Everything you value.<br/><em>One place to find it.</em></h1><p>Shop physical goods, digital products and verified NFTs. Pay in AUD or the digital currency you choose—with a price locked when it matters.</p><div className="hero-buttons"><button className="primary" onClick={() => nav("market")}>Explore marketplace <span>→</span></button><button className="ghost" onClick={() => nav("sell")}>Start selling</button></div><div className="proof"><span><b>12K+</b> active sellers</span><span><b>A$48M</b> protected volume</span><span><b>60+</b> currencies</span></div></div><div className="hero-stage"><div className="orbit one"/><div className="orbit two"/><div className="hero-card back"><span>NFT</span><b>#042</b></div><div className="hero-card front"><span>OF<span>PAY</span></span><b>A$289.00</b><div className="mini-coins">{coins.slice(0,4).map(c => <CoinIcon key={c.symbol} coin={c}/>)}</div><small>Choose how you pay</small></div><div className="pink-sphere"/></div></section>
-      <section className="ticker"><span>LIVE MARKET</span>{coins.slice(0,4).map((c,i) => <div key={c.symbol}><b>{c.symbol}/AUD</b><strong>{c.rate.toLocaleString("en-AU", {maximumFractionDigits:2})}</strong><em>{i === 2 ? "−0.8%" : `+${(1.2+i*.7).toFixed(1)}%`}</em></div>)}</section>
-      <section className="section"><div className="section-head"><div><span className="eyebrow">CURATED FOR YOU</span><h2>Objects of desire,<br/>in every form.</h2></div><button className="text-link" onClick={() => nav("market")}>View all products →</button></div><div className="product-grid">{products.map(p => <article className="product-card" key={p.id}><ProductArt tone={p.tone} type={p.type}/><div className="product-info"><span>{p.vendor}</span><h3>{p.name}</h3><p>{p.badge}</p><div><b>A${p.price}</b><button onClick={() => setPayment(p)}>Buy with crypto</button></div></div></article>)}</div></section>
-      <section className="ofpay-banner"><div><span className="eyebrow">INTRODUCING OFPAY</span><h2>Thirty seconds.<br/><em>Infinite possibility.</em></h2><p>Your customer chooses a currency. OfPay locks the AUD value for 30 seconds, creates a secure payment request and tracks settlement—without making the merchant think in crypto.</p><button className="light-button" onClick={() => nav("ofpay")}>See how OfPay works →</button></div><div className="phone"><div className="phone-top">W8R <span>•••</span></div><div className="phone-amount"><small>PAY</small><b>A$160.00</b><span>Choose a currency</span></div><div className="phone-coins">{coins.slice(0,4).map(c => <CoinIcon key={c.symbol} coin={c}/>)}</div><div className="phone-lock">Quote ready <b>00:30</b></div></div></section>
-    </>}
-
-    {(view === "market" || view === "nfts") && <section className="market-page"><div className="page-title"><span className="eyebrow">{view === "nfts" ? "W8R COLLECT" : "THE W8R MARKET"}</span><h1>{view === "nfts" ? "Own what moves you." : "Find your next favourite thing."}</h1><p>{view === "nfts" ? "Verified digital art, membership and utility—clear provenance, simple settlement." : "Physical, digital and on-chain products from independent sellers around the world."}</p></div><div className="market-tools"><label>⌕<input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search products, creators or collections"/></label><button>All categories⌄</button><button>Price⌄</button><button>Newest⌄</button></div><div className="product-grid large">{visibleProducts.filter(p => view !== "nfts" || p.type === "NFT").concat(view === "nfts" ? [products[2],products[2],products[2]] : []).map((p,i) => <article className="product-card" key={`${p.id}-${i}`}><ProductArt tone={p.tone} type={p.type}/><div className="product-info"><span>{p.vendor}</span><h3>{i ? `${p.name} ${String(i+1).padStart(2,"0")}` : p.name}</h3><p>{p.badge}</p><div><b>A${p.price + i*18}</b><button onClick={() => setPayment({...p,price:p.price+i*18})}>Buy with crypto</button></div></div></article>)}</div></section>}
-
-    {view === "sell" && <section className="sell-page"><div className="sell-hero"><span className="eyebrow">SELL ON W8R</span><h1>One store.<br/><em>Every kind of value.</em></h1><p>Launch a storefront for physical goods, downloads and NFTs. Price in Australian dollars and let every customer pay their way.</p><button className="primary" onClick={() => nav("crm")}>Open your merchant studio →</button></div><div className="sell-steps">{[["01","Build","A beautiful, flexible storefront with inventory, variants and digital fulfilment."],["02","Connect","Add OfPay, your settlement wallet and the exchanges or coins you trust."],["03","Grow","Turn every order into a relationship with CRM, campaigns and rewards." ]].map(s => <article key={s[0]}><span>{s[0]}</span><h3>{s[1]}</h3><p>{s[2]}</p></article>)}</div><div className="feature-matrix"><h2>Commerce without compromise.</h2><div>{["Unified product catalogue","AUD-first pricing","Physical fulfilment","Digital delivery","NFT mint & resale","Customer profiles","Campaign automation","Proof & reward review","Multi-wallet settlement","Exportable audit history","Fraud monitoring","Tax-ready reporting"].map(x => <span key={x}>✓ {x}</span>)}</div></div></section>}
-
-    {view === "crm" && <section className="dashboard"><aside><Brand/><div className="store-pill"><span>WG</span><div><b>Warrior Garden</b><small>Live store</small></div>⌄</div><menu>{[["crm","Overview","⌂"],["market","Orders","□"],["sell","Products","◇"],["crm","Customers","♙"],["ofpay","OfPay","◉"],["nfts","NFT Studio","✦"],["plugins","Integrations","⌘"]].map(([id,label,icon],i) => <button className={i===0?"active":""} key={label} onClick={() => nav(id as View)}><span>{icon}</span>{label}{label==="Orders"&&<em>8</em>}</button>)}</menu><button className="support">? <span><b>W8R Concierge</b><small>We’re here to help</small></span></button></aside><div className="dash-main"><div className="dash-head"><div><span>THURSDAY, 13 AUGUST</span><h1>Good morning, Daniel.</h1><p>Your store is thriving. Here’s what deserves your attention today.</p></div><button className="primary" onClick={() => notify("Product draft created")}>＋ Add product</button></div><div className="metrics"><Metric label="Gross sales" value="A$24,820" delta="↑ 18.4%"/><Metric label="Orders" value="186" delta="↑ 12.1%"/><Metric label="Crypto share" value="38.6%" delta="↑ 6.2%"/><Metric label="Returning customers" value="41.2%" delta="↑ 3.8%"/></div><div className="dash-grid"><div className="panel revenue"><div className="panel-head"><div><span>REVENUE</span><h3>A$24,820.40</h3></div><select><option>Last 30 days</option></select></div><div className="chart"><span>A$8k</span><span>A$6k</span><span>A$4k</span><span>A$2k</span><div className="chart-fill"/><div className="chart-line">●</div></div><div className="chart-legend"><span>● Total sales</span><span>● OfPay</span></div></div><div className="panel attention"><div className="panel-head"><div><span>NEEDS ATTENTION</span><h3>Your next moves</h3></div><b>4</b></div>{[["8 orders to fulfil","Oldest: 16 hours","Review orders"],["3 proof submissions","STAT rewards awaiting review","Open queue"],["Low stock on 2 products","Aurelia Ring · Carryall","Update stock"]].map(x=><article key={x[0]}><i>!</i><div><b>{x[0]}</b><span>{x[1]}</span></div><button onClick={()=>notify(x[2])}>{x[2]} →</button></article>)}</div><div className="panel payments"><div className="panel-head"><div><span>PAYMENT MIX</span><h3>How customers paid</h3></div></div>{[["AUD / Card",61.4,"A$15,240"],["BTC",18.6,"A$4,617"],["ETH",10.2,"A$2,532"],["SOL",6.1,"A$1,514"],["Other",3.7,"A$917"]].map((x,i)=><div className="pay-line" key={x[0]}><span>{x[0]}</span><div><i style={{width:`${x[1]}%`,background:i===0?"#d6ad48":i===1?"#ff2d78":"#786d61"}}/></div><b>{x[2]}</b></div>)}</div><div className="panel customers"><div className="panel-head"><div><span>CUSTOMERS</span><h3>Recent relationships</h3></div><button onClick={()=>notify("Customer list opened")}>View CRM →</button></div>{[["AM","Ari Morgan","A$1,248","VIP"],["JL","Jamie Li","A$864","Repeat"],["SK","Samira Khan","A$620","NFT buyer"],["OM","Owen Miles","A$289","New"]].map(x=><article key={x[1]}><i>{x[0]}</i><div><b>{x[1]}</b><span>{x[3]}</span></div><strong>{x[2]}</strong></article>)}</div></div></div></section>}
-
-    {view === "ofpay" && <section className="ofpay-page"><div className="page-title"><span className="eyebrow">OFPAY · PAYMENT ORCHESTRATION</span><h1>AUD certainty.<br/><em>Digital freedom.</em></h1><p>Quote, route, verify and settle digital-currency payments while your catalogue and accounts stay anchored in Australian dollars.</p></div><div className="flow"><article><span>1</span><h3>AUD price</h3><b>A$160.00</b><p>The seller always controls the real-world price.</p></article><i>→</i><article><span>2</span><h3>Live quote</h3><b>0.000908 BTC</b><p>Rate, route and fees lock for 30 seconds.</p></article><i>→</i><article><span>3</span><h3>Settlement</h3><b>Confirmed</b><p>Choose crypto, stablecoin or AUD settlement.</p></article></div><div className="ofpay-console"><div><span>OFPAY CONSOLE</span><h2>Create a payment request</h2><label>Amount in AUD<input defaultValue="160.00"/></label><label>Accepted currencies<div className="choice-coins">{coins.map(c=><button key={c.symbol} className="on"><CoinIcon coin={c}/>{c.symbol} ✓</button>)}</div></label><button className="primary" onClick={()=>setPayment({...products[0],name:"Custom payment request",price:160})}>Generate 30-second QR</button></div><aside><h3>Settlement preference</h3><button className="settle active"><i>◉</i><span><b>Settle in AUD</b><small>Auto-convert after confirmation</small></span>✓</button><button className="settle"><i>◇</i><span><b>Keep original asset</b><small>Route to your connected wallet</small></span></button><button className="settle"><i>≈</i><span><b>Settle in USDC</b><small>Reduce volatility exposure</small></span></button><div className="risk"><b>Shield rules active</b><span>Sanctions screening · Wallet risk · Quote variance · Confirmation policy</span></div></aside></div></section>}
-
-    {view === "plugins" && <section className="plugins-page"><div className="page-title"><span className="eyebrow">W8R CONNECT</span><h1>Bring your network.<br/><em>Join the flow of value.</em></h1><p>A consistent onboarding layer for coins, exchanges, wallets, custody providers and settlement partners.</p></div><div className="plugin-layout"><div className="plugin-list"><h3>Integration directory</h3>{[["EX","Exchange connector","Exchange","Live"],["₿","Bitcoin","Network","Live"],["◆","Ethereum","Network","Live"],["S","Solana","Network","Live"],["＋","Your integration","Partner","Start"]].map(x=><article key={x[1]}><i>{x[0]}</i><div><b>{x[1]}</b><span>{x[2]}</span></div><em className={x[3]==="Live"?"live":""}>{x[3]}</em></article>)}</div><div className="onboarding"><div className="steps">{[1,2,3,4].map(n=><button key={n} className={pluginStep>=n?"done":""} onClick={()=>setPluginStep(n)}>{pluginStep>n?"✓":n}<span>{["Organisation","Capabilities","Technical","Review"][n-1]}</span></button>)}</div><div className="step-card"><span className="eyebrow">STEP {pluginStep} OF 4</span><h2>{["Tell us who you are","Choose your capabilities","Define the connection","Review & submit"][pluginStep-1]}</h2>{pluginStep===1&&<><label>Organisation name<input placeholder="e.g. Southern Cross Exchange"/></label><label>Integration type<select><option>Digital asset exchange</option><option>Coin or blockchain network</option><option>Wallet provider</option><option>Custody / settlement provider</option></select></label><div className="two"><label>Website<input placeholder="https://"/></label><label>Primary jurisdiction<input placeholder="Australia"/></label></div></>}{pluginStep===2&&<div className="cap-grid">{["Price quotes","Payment routing","AUD settlement","Asset custody","Refunds","NFT transfers"].map(x=><button key={x}>✓<span><b>{x}</b><small>Enable for this connection</small></span></button>)}</div>}{pluginStep===3&&<><label>API environment<select><option>Sandbox first</option><option>Production review</option></select></label><label>Webhook callback<input placeholder="https://api.partner.com/w8r/events"/></label><div className="code-box">POST /v1/ofpay/quotes<br/><span>Authorization: Bearer ••••••••</span></div></>}{pluginStep===4&&<div className="review-box"><b>Ready for partner review</b><p>W8R will validate security, liquidity, supported regions, settlement behaviour and customer disclosures before activation.</p><span>✓ Sandbox required</span><span>✓ No private keys shared</span><span>✓ Versioned adapter contract</span></div>}<button className="primary" onClick={()=>pluginStep<4?setPluginStep(s=>s+1):notify("Partner application submitted")}>{pluginStep<4?"Continue →":"Submit for review"}</button></div></div></div></section>}
-
-    {payment && <PaymentModal product={payment} close={() => setPayment(null)}/>} 
-    {view !== "crm" && <footer><Brand/><p>Commerce for every kind of value.</p><div><button onClick={()=>nav("market")}>Shop</button><button onClick={()=>nav("sell")}>Sell</button><button onClick={()=>nav("ofpay")}>OfPay</button><button onClick={()=>nav("plugins")}>Partners</button></div><small>© 2026 W8R · Prototype environment · Digital assets involve risk</small></footer>}
-  </main>;
-}
-
-export default App;

@@ -25,3 +25,18 @@ export const paymentQuotes = sqliteTable("payment_quotes", {
 export const integrations = sqliteTable("integrations", {
   id: text("id").primaryKey(), organisation: text("organisation").notNull(), kind: text("kind").notNull(), status: text("status").notNull().default("submitted"), capabilities: text("capabilities").notNull(), createdAt: integer("created_at").notNull(),
 }, t => [index("idx_integrations_status_kind").on(t.status, t.kind)]);
+
+export const demoWorkspaces = sqliteTable("demo_workspaces", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  stateJson: text("state_json").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+}, t => [uniqueIndex("idx_demo_workspaces_user").on(t.userId)]);
+
+export const auditEvents = sqliteTable("audit_events", {
+  id: text("id").primaryKey(),
+  workspaceId: text("workspace_id").notNull(),
+  action: text("action").notNull(),
+  payloadJson: text("payload_json").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, t => [index("idx_audit_events_workspace_created").on(t.workspaceId, t.createdAt)]);
