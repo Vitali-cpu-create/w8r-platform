@@ -72,7 +72,7 @@ npm run db:generate
 - `app/api/demo/route.ts` — validated state persistence and audit events
 - `app/globals.css` — W8R gold, gloss-black and candy-pink system with BTLR teal accents
 - `db/schema.ts` — marketplace and demonstration data model
-- `.openai/drizzle/` — generated D1 migrations
+- `drizzle/` — generated, append-only D1 migrations packaged by Sites
 - `lib/credit/` — deterministic Project Foundry compiler, types and capability catalogue
 - `app/credit/` — complete founder workspace
 - `app/api/credit/projects/route.ts` — validated, user-owned version persistence
