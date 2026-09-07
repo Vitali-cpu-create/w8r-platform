@@ -19,6 +19,9 @@
 - Supply-chain compromise in merchant apps and provider adapters
 - Personal-data leakage through public chains or over-broad staff access
 - Insider changes to fee, risk, payout or dispute decisions
+- Evidence-label tampering, unauthorised project access or deletion of prior C.R.E.D.I.T versions
+- Prompt or imported-content injection if an optional provider or marketplace adapter is added later
+- Generated language falsely upgrading a prototype, dependency or unverified claim to live fact
 
 ## Required production controls
 
@@ -34,6 +37,10 @@
 - Dependency scanning, code review, protected branches, release provenance and penetration testing
 - Tested backup, recovery, regional failover and incident-response exercises
 - Retention/deletion schedules and privacy review before any on-chain anchoring
+- Server-side project ownership checks and append-only version records for Foundry workspaces
+- Strict founder-brief field allowlists, length limits and deterministic normalisation
+- Provider-off parity: core C.R.E.D.I.T compilation must remain available without an external AI service
+- Future generated suggestions are untrusted input until a human accepts them; evidence labels and policy gates are not provider-editable
 
 ## Demonstration controls
 

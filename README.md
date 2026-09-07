@@ -2,7 +2,19 @@
 
 **How can we serve you better?**
 
-W8R is an AUD-first commerce concept joining a multi-format marketplace, BTLR merchant migration and OfPay payment orchestration. This repository contains the working private-investor demonstration: a single end-to-end journey from an existing merchant store to a timed digital-asset payment, portable receipt, resale, escrow, reconciliation and buyer/seller protection.
+W8R is an AUD-first commerce concept joining a multi-format marketplace, BTLR merchant migration and OfPay payment orchestration. This repository contains the working private-investor demonstration and C.R.E.D.I.T Project Foundry: a provider-neutral system that turns an entrepreneurial brief into a governed, evidence-labelled and testable product blueprint.
+
+## C.R.E.D.I.T Project Foundry
+
+Open `/credit` to create a project brief and compile a complete decision dossier without an OpenAI API key or any other external AI provider. The Foundry produces:
+
+- Phase Ω constitutional gates and the six C.R.E.D.I.T stages;
+- evidence-labelled claims with sources, owners and test status;
+- vision, wedge, MVP, expansion and `NOT NOW` boundaries;
+- a selected capability graph and permissioned adapter manifests;
+- five investor bounce-back passes;
+- acceptance tests, kill criteria and a 30/60/90/180-day proof plan;
+- versioned private D1 records plus portable JSON and Markdown exports.
 
 ## What the demonstration proves
 
@@ -61,10 +73,14 @@ npm run db:generate
 - `app/globals.css` — W8R gold, gloss-black and candy-pink system with BTLR teal accents
 - `db/schema.ts` — marketplace and demonstration data model
 - `.openai/drizzle/` — generated D1 migrations
+- `lib/credit/` — deterministic Project Foundry compiler, types and capability catalogue
+- `app/credit/` — complete founder workspace
+- `app/api/credit/projects/route.ts` — validated, user-owned version persistence
 - `docs/ARCHITECTURE.md` — production architecture and control boundaries
 - `docs/DELIVERY-ROADMAP.md` — evidence-led MVP sequence
 - `docs/SECURITY.md` — threat model and pre-production controls
+- `docs/CREDIT-PROJECT-031.md` — 2026 revalidation, product contract, standards and proof plan
 
 ## Status
 
-Release `0.2.0` is an investor demonstration, not a production exchange, custody service or financial product.
+Release `0.3.0` adds the provider-neutral C.R.E.D.I.T Project Foundry. W8R and OfPay remain private prototypes, not a production exchange, custody service or financial product.

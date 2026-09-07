@@ -10,6 +10,16 @@ import tseslint from "typescript-eslint";
 const eslintConfig = defineConfig([
   globalIgnores([
     ".next/**",
+    ".publish-tools/**",
+    ".vinext/**",
+    ".wrangler/**",
+    "btlr/**",
+    "canva_package/**",
+    "dist - Copy/**",
+    "examples/**",
+    "operations/**",
+    "public - Copy/**",
+    "research/**",
     "dist/**",
     "out/**",
     "build/**",

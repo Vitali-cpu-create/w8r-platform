@@ -9,6 +9,7 @@
 | OfPay | Quote orchestration, route selection, TOTvalue record and settlement observation | Never stores partner secrets in the browser; custody and fiat settlement remain with licensed partners |
 | Receipt Vault | Signed purchase credential, recovery, ownership history and accounting evidence | Public verification reveals minimum necessary fields; private evidence is access controlled |
 | Trust & Protection | KYB state, delivery outcomes, case evidence, policy and fee incentives | Identity decisions and high-risk reviews require qualified providers and human escalation |
+| C.R.E.D.I.T Project Foundry | Founder intake, Phase Ω governance, evidence labels, scope boundaries, capability selection and investor interrogation | Deterministic provider-neutral core; optional providers cannot override policy or provenance |
 
 ## Reference flow
 
@@ -50,3 +51,7 @@ The demonstration is intentionally a modular monolith. The production platform c
 ## Current implementation
 
 The app persists per-viewer sandbox state in Cloudflare D1 using `demo_workspaces` and records user actions in `audit_events`. The UI gracefully becomes a local-only preview when a D1 binding is absent. Marketplace tables are present for merchant, product, customer, order, quote and integration development.
+
+Project Foundry adds a second, user-owned persistence surface. `credit_projects` points to the latest version, while `credit_project_versions`, `credit_evidence`, `credit_graph_nodes`, `credit_graph_edges` and `credit_build_runs` preserve each immutable compilation. The rules compiler lives separately from the HTTP and rendering layers, so the same normalised brief produces the same fingerprint in the interface, API and automated tests. The route remains useful when D1 is absent but explicitly labels that result as local rather than saved.
+
+Project Foundry's integration contract is clean-room and permissioned: documented OAuth APIs, signed webhooks and user-owned exports only. Every adapter declares authorisation, data boundary, failure recovery and certification evidence. External AI is an optional future adapter and is not part of release `0.3.0`.

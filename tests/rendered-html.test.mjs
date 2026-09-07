@@ -55,3 +55,60 @@ test("the demo API validates and isolates persisted state", async () => {
   assert.match(source, /user\?\.userId \?\? "local-investor-demo"/);
   assert.match(source, /auditEvents/);
 });
+
+test("server-renders the provider-neutral C.R.E.D.I.T Foundry", async () => {
+  const app = await worker();
+  const response = await app.fetch(new Request("http://localhost/credit", { headers: { accept: "text/html" } }), environment, context);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /C\.R\.E\.D\.I\.T Project Foundry/);
+  assert.match(html, /External AI not connected/);
+  assert.match(html, /Turn conviction into an/);
+  assert.match(html, /investable proof plan/);
+  assert.match(html, /Phase Omega gate/);
+});
+
+test("the rules API compiles a stable, labelled blueprint without an AI provider", async () => {
+  const { compileCreditProject } = await import("../lib/credit/compiler.ts");
+  const brief = {
+    ventureName: "Harbour Proof",
+    oneLine: "A verified marketplace for repairable marine equipment.",
+    customer: "Independent Australian boat owners and marine repairers.",
+    problem: "Used parts lack condition evidence, ownership provenance and a dependable fulfilment path.",
+    ambition: "Make repairable equipment easier to trust and keep in service.",
+    revenueModel: "Transaction fee plus verified seller subscription.",
+    targetPlatform: "Responsive marketplace with authorised seller imports.",
+    jurisdiction: "Australia first.",
+    riskProfile: "balanced",
+  };
+  const first = compileCreditProject(brief);
+  const second = compileCreditProject(brief);
+  assert.equal(first.meta.providerMode, "deterministic-rules");
+  assert.equal(first.meta.fingerprint, second.meta.fingerprint);
+  assert.deepEqual(first, second);
+  assert.ok(first.evidence.every(item => item.label && item.owner && item.source));
+  assert.ok(first.investorPasses.length === 5);
+  assert.match(first.boundaries.notNow.join(" "), /Secret social scoring/i);
+});
+
+test("the rules API rejects malformed founder briefs", async () => {
+  const route = await readFile(new URL("../app/api/credit/projects/route.ts", import.meta.url), "utf8");
+  assert.match(route, /entries\.some\(\(\[key\]\) => !BRIEF_KEYS\.has\(key\)\)/);
+  assert.match(route, /!String\(result\.ventureName/);
+  assert.match(route, /!String\(result\.oneLine/);
+  assert.match(route, /body\.action !== "compile"/);
+  assert.match(route, /status: 422/);
+});
+
+test("Project 031 persistence is versioned and evidence-led", async () => {
+  const schema = await readFile(new URL("../db/schema.ts", import.meta.url), "utf8");
+  const route = await readFile(new URL("../app/api/credit/projects/route.ts", import.meta.url), "utf8");
+  for (const table of ["credit_projects", "credit_project_versions", "credit_evidence", "credit_build_runs", "credit_graph_nodes", "credit_graph_edges"]) {
+    assert.match(schema, new RegExp(table));
+  }
+  assert.match(route, /credit\.blueprint\.compiled/);
+  assert.match(route, /latestVersion \+ 1/);
+  assert.match(route, /raw\.length > 64_000/);
+  assert.match(route, /status: 413/);
+  assert.match(route, /status: 422/);
+});

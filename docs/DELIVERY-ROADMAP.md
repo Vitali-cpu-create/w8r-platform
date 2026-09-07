@@ -1,5 +1,16 @@
 # Evidence-led delivery roadmap
 
+## Project Foundry proof loop (release 0.3)
+
+- Structured founder brief and Phase Ω constitutional gate
+- Provider-neutral deterministic C.R.E.D.I.T compilation
+- Evidence labels, capability graph, adapter contracts and five investor passes
+- Versioned private D1 persistence with audit events
+- Portable JSON and Markdown dossiers
+- Explicit vision, wedge, MVP, expansion and `NOT NOW` boundaries
+
+Exit evidence: five outside founders complete a dossier without an AI key and can identify the decision improved, time saved and risk exposed. Full acceptance and kill criteria are recorded in `docs/CREDIT-PROJECT-031.md`.
+
 ## Phase 0 — Investor and design-partner proof (current)
 
 - Interactive end-to-end product journey

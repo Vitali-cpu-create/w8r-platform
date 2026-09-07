@@ -40,3 +40,84 @@ export const auditEvents = sqliteTable("audit_events", {
   payloadJson: text("payload_json").notNull(),
   createdAt: integer("created_at").notNull(),
 }, t => [index("idx_audit_events_workspace_created").on(t.workspaceId, t.createdAt)]);
+
+export const creditProjects = sqliteTable("credit_projects", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  name: text("name").notNull(),
+  status: text("status").notNull().default("draft"),
+  latestVersion: integer("latest_version").notNull().default(1),
+  briefJson: text("brief_json").notNull(),
+  createdAt: integer("created_at").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+}, t => [
+  index("idx_credit_projects_user_updated").on(t.userId, t.updatedAt),
+]);
+
+export const creditProjectVersions = sqliteTable("credit_project_versions", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id").notNull(),
+  versionNumber: integer("version_number").notNull(),
+  fingerprint: text("fingerprint").notNull(),
+  engineVersion: text("engine_version").notNull(),
+  blueprintJson: text("blueprint_json").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, t => [
+  uniqueIndex("idx_credit_versions_project_number").on(t.projectId, t.versionNumber),
+  index("idx_credit_versions_project_created").on(t.projectId, t.createdAt),
+]);
+
+export const creditEvidence = sqliteTable("credit_evidence", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id").notNull(),
+  versionId: text("version_id").notNull(),
+  label: text("label").notNull(),
+  claim: text("claim").notNull(),
+  source: text("source").notNull(),
+  owner: text("owner").notNull(),
+  status: text("status").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, t => [
+  index("idx_credit_evidence_project_version").on(t.projectId, t.versionId),
+  index("idx_credit_evidence_label_status").on(t.label, t.status),
+]);
+
+export const creditBuildRuns = sqliteTable("credit_build_runs", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id").notNull(),
+  versionId: text("version_id").notNull(),
+  engineVersion: text("engine_version").notNull(),
+  providerMode: text("provider_mode").notNull().default("deterministic-rules"),
+  status: text("status").notNull(),
+  summaryJson: text("summary_json").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, t => [
+  index("idx_credit_build_runs_project_created").on(t.projectId, t.createdAt),
+]);
+
+export const creditGraphNodes = sqliteTable("credit_graph_nodes", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id").notNull(),
+  versionId: text("version_id").notNull(),
+  nodeKey: text("node_key").notNull(),
+  kind: text("kind").notNull(),
+  label: text("label").notNull(),
+  status: text("status").notNull(),
+  description: text("description").notNull(),
+}, t => [
+  uniqueIndex("idx_credit_graph_nodes_version_key").on(t.versionId, t.nodeKey),
+  index("idx_credit_graph_nodes_project").on(t.projectId),
+]);
+
+export const creditGraphEdges = sqliteTable("credit_graph_edges", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id").notNull(),
+  versionId: text("version_id").notNull(),
+  edgeKey: text("edge_key").notNull(),
+  fromNode: text("from_node").notNull(),
+  toNode: text("to_node").notNull(),
+  relationship: text("relationship").notNull(),
+}, t => [
+  uniqueIndex("idx_credit_graph_edges_version_key").on(t.versionId, t.edgeKey),
+  index("idx_credit_graph_edges_project").on(t.projectId),
+]);
