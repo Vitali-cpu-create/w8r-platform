@@ -1,7 +1,7 @@
 {
   "name": "w8r-platform",
-  "version": "0.3.0",
-  "description": "W8R, BTLR and OfPay investor demonstration with the provider-neutral C.R.E.D.I.T Project Foundry.",
+  "version": "0.3.1",
+  "description": "W8R, BTLR and OfPay investor demonstration with the provider-neutral C.R.E.D.I.T Project Foundry and private founder pilot evidence loop.",
   "private": true,
   "engines": {
     "node": ">=22.13.0"

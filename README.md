@@ -16,6 +16,15 @@ Open `/credit` to create a project brief and compile a complete decision dossier
 - acceptance tests, kill criteria and a 30/60/90/180-day proof plan;
 - versioned private D1 records plus portable JSON and Markdown exports.
 
+## Founder pilot and evidence room
+
+- `/credit/pilot` runs the consented, invitation-only ten-minute founder journey.
+- `/credit/ops` creates bounded pilot invitations and shows the operator-only Day-30 evidence gates.
+- Invitation codes are hashed at rest; results use pseudonymous participant aliases.
+- Completion events, assistance, deliberate feedback, accessibility notes and issue reports are stored in D1.
+- The evidence room exports an investor memo and structured JSON without participant email addresses.
+- The pilot measures the Foundry proof loop only. W8R transactions and regulated OfPay functions remain simulated.
+
 ## What the demonstration proves
 
 - BTLR creates a permissioned digital twin of catalogue, files, customers, orders, fulfilment and app dependencies.
@@ -76,6 +85,10 @@ npm run db:generate
 - `lib/credit/` — deterministic Project Foundry compiler, types and capability catalogue
 - `app/credit/` — complete founder workspace
 - `app/api/credit/projects/route.ts` — validated, user-owned version persistence
+- `app/credit/pilot/` — consented founder test journey and outcome report
+- `app/credit/ops/` — restricted pilot operations and evidence dashboard
+- `app/api/credit/pilot/` — invitation, telemetry, feedback and operator APIs
+- `lib/credit/pilot.ts` — deterministic Day-30 metrics and diligence export
 - `docs/ARCHITECTURE.md` — production architecture and control boundaries
 - `docs/DELIVERY-ROADMAP.md` — evidence-led MVP sequence
 - `docs/SECURITY.md` — threat model and pre-production controls
@@ -83,4 +96,4 @@ npm run db:generate
 
 ## Status
 
-Release `0.3.0` adds the provider-neutral C.R.E.D.I.T Project Foundry. W8R and OfPay remain private prototypes, not a production exchange, custody service or financial product.
+Release `0.3.1` adds the private founder pilot, evidence instrumentation and operator diligence room. W8R and OfPay remain private prototypes, not a production exchange, custody service or financial product.

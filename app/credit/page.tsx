@@ -9,10 +9,13 @@ export const metadata: Metadata = {
   description: "Turn an entrepreneurial idea into a governed, evidence-labelled and testable product blueprint without an external AI provider.",
 };
 
-export default async function CreditPage() {
+export default async function CreditPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const user = await getChatGPTUser();
+  const params = await searchParams;
+  const requestedPilot = typeof params.pilotSession === "string" ? params.pilotSession : null;
+  const pilotSessionId = requestedPilot && /^[a-zA-Z0-9:_-]{1,120}$/.test(requestedPilot) ? requestedPilot : null;
   return <CreditFoundry viewer={{
     displayName: user?.displayName ?? "Founder sandbox",
     authenticated: Boolean(user),
-  }} />;
+  }} initialPilotSessionId={pilotSessionId} />;
 }

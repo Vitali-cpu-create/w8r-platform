@@ -121,3 +121,87 @@ export const creditGraphEdges = sqliteTable("credit_graph_edges", {
   uniqueIndex("idx_credit_graph_edges_version_key").on(t.versionId, t.edgeKey),
   index("idx_credit_graph_edges_project").on(t.projectId),
 ]);
+
+export const creditPilotInvites = sqliteTable("credit_pilot_invites", {
+  id: text("id").primaryKey(),
+  codeHash: text("code_hash").notNull(),
+  label: text("label").notNull(),
+  cohort: text("cohort").notNull(),
+  status: text("status").notNull().default("active"),
+  maxUses: integer("max_uses").notNull().default(1),
+  useCount: integer("use_count").notNull().default(0),
+  expiresAt: integer("expires_at").notNull(),
+  createdBy: text("created_by").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, t => [
+  uniqueIndex("idx_credit_pilot_invites_code_hash").on(t.codeHash),
+  index("idx_credit_pilot_invites_status_expires").on(t.status, t.expiresAt),
+]);
+
+export const creditPilotSessions = sqliteTable("credit_pilot_sessions", {
+  id: text("id").primaryKey(),
+  inviteId: text("invite_id").notNull(),
+  userId: text("user_id").notNull(),
+  participantAlias: text("participant_alias").notNull(),
+  role: text("role").notNull(),
+  ventureStage: text("venture_stage").notNull(),
+  status: text("status").notNull().default("active"),
+  consentVersion: text("consent_version").notNull(),
+  consentedAt: integer("consented_at").notNull(),
+  startedAt: integer("started_at").notNull(),
+  completedAt: integer("completed_at"),
+  projectId: text("project_id"),
+  lastStep: text("last_step").notNull().default("onboarding"),
+  assistanceCount: integer("assistance_count").notNull().default(0),
+  updatedAt: integer("updated_at").notNull(),
+}, t => [
+  index("idx_credit_pilot_sessions_user_updated").on(t.userId, t.updatedAt),
+  index("idx_credit_pilot_sessions_invite_status").on(t.inviteId, t.status),
+]);
+
+export const creditPilotEvents = sqliteTable("credit_pilot_events", {
+  id: text("id").primaryKey(),
+  sessionId: text("session_id").notNull(),
+  userId: text("user_id").notNull(),
+  eventType: text("event_type").notNull(),
+  step: text("step").notNull(),
+  metadataJson: text("metadata_json").notNull().default("{}"),
+  createdAt: integer("created_at").notNull(),
+}, t => [
+  index("idx_credit_pilot_events_session_created").on(t.sessionId, t.createdAt),
+  index("idx_credit_pilot_events_type_created").on(t.eventType, t.createdAt),
+]);
+
+export const creditPilotFeedback = sqliteTable("credit_pilot_feedback", {
+  id: text("id").primaryKey(),
+  sessionId: text("session_id").notNull(),
+  userId: text("user_id").notNull(),
+  decisionImproved: text("decision_improved").notNull(),
+  decisionDescription: text("decision_description").notNull(),
+  timeSavedMinutes: integer("time_saved_minutes").notNull(),
+  riskExposed: text("risk_exposed").notNull(),
+  usefulnessScore: integer("usefulness_score").notNull(),
+  clarityScore: integer("clarity_score").notNull(),
+  quoteConsent: integer("quote_consent").notNull().default(0),
+  quoteText: text("quote_text"),
+  accessibilityIssue: text("accessibility_issue"),
+  createdAt: integer("created_at").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+}, t => [
+  uniqueIndex("idx_credit_pilot_feedback_session").on(t.sessionId),
+]);
+
+export const creditPilotIssues = sqliteTable("credit_pilot_issues", {
+  id: text("id").primaryKey(),
+  sessionId: text("session_id").notNull(),
+  userId: text("user_id").notNull(),
+  category: text("category").notNull(),
+  severity: text("severity").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default("open"),
+  createdAt: integer("created_at").notNull(),
+  resolvedAt: integer("resolved_at"),
+}, t => [
+  index("idx_credit_pilot_issues_status_created").on(t.status, t.createdAt),
+  index("idx_credit_pilot_issues_session_created").on(t.sessionId, t.createdAt),
+]);

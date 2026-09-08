@@ -22,6 +22,8 @@
 - Evidence-label tampering, unauthorised project access or deletion of prior C.R.E.D.I.T versions
 - Prompt or imported-content injection if an optional provider or marketplace adapter is added later
 - Generated language falsely upgrading a prototype, dependency or unverified claim to live fact
+- Invitation-code disclosure, pilot impersonation or unauthorised access to participant evidence
+- Free-text pilot feedback containing credentials, identity documents or third-party personal information
 
 ## Required production controls
 
@@ -41,6 +43,10 @@
 - Strict founder-brief field allowlists, length limits and deterministic normalisation
 - Provider-off parity: core C.R.E.D.I.T compilation must remain available without an external AI service
 - Future generated suggestions are untrusted input until a human accepts them; evidence labels and policy gates are not provider-editable
+- Pilot invitation codes are random, bounded by use and expiry, and stored only as SHA-256 hashes
+- Pilot APIs require the authenticated Site user and enforce per-session ownership server-side
+- The evidence room requires a deployment-managed operator allowlist and returns pseudonymous participant records without email addresses
+- Pilot free text is length-bounded, purpose-limited and accompanied by explicit safe-data instructions
 
 ## Demonstration controls
 

@@ -33,5 +33,7 @@ interface Fetcher {
 declare module "cloudflare:workers" {
   export const env: {
     DB: D1Database;
+    CREDIT_OPERATOR_USER_IDS?: string;
+    CREDIT_OPERATOR_EMAILS?: string;
   };
 }

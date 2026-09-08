@@ -1,6 +1,6 @@
 # Evidence-led delivery roadmap
 
-## Project Foundry proof loop (release 0.3)
+## Project Foundry proof loop (release 0.3.1)
 
 - Structured founder brief and Phase Ω constitutional gate
 - Provider-neutral deterministic C.R.E.D.I.T compilation
@@ -8,8 +8,11 @@
 - Versioned private D1 persistence with audit events
 - Portable JSON and Markdown dossiers
 - Explicit vision, wedge, MVP, expansion and `NOT NOW` boundaries
+- Invitation-only founder pilot with explicit consent and safe-data acknowledgements
+- Pseudonymous telemetry, feedback, issue ledger and operator evidence room
+- Day-30 gate calculation plus portable investor evidence memo
 
-Exit evidence: five outside founders complete a dossier without an AI key and can identify the decision improved, time saved and risk exposed. Full acceptance and kill criteria are recorded in `docs/CREDIT-PROJECT-031.md`.
+Exit evidence: five outside founders complete a dossier without an AI key and can identify the decision improved, time saved and risk exposed. At least three complete without live assistance, the median completion time is ten minutes or less, and five complete both portable exports. Full acceptance and kill criteria are recorded in `docs/CREDIT-PROJECT-031.md`.
 
 ## Phase 0 — Investor and design-partner proof (current)
 

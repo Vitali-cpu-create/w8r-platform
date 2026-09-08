@@ -112,3 +112,63 @@ test("Project 031 persistence is versioned and evidence-led", async () => {
   assert.match(route, /status: 413/);
   assert.match(route, /status: 422/);
 });
+
+test("server-renders the controlled founder pilot and operator evidence room", async () => {
+  const app = await worker();
+  for (const [path, expected] of [["/credit/pilot", /PRIVATE FOUNDER PILOT/], ["/credit/ops", /OPERATOR EVIDENCE ROOM/]]) {
+    const response = await app.fetch(new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }), environment, context);
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), expected);
+  }
+  const invited = await app.fetch(new Request("http://localhost/credit/pilot?code=CRD-ABCDEF-123456", { headers: { accept: "text/html" } }), environment, context);
+  assert.equal(invited.status, 200);
+  assert.match(await invited.text(), /CRD-ABCDEF-123456/);
+  const foundryPilot = await app.fetch(new Request("http://localhost/credit?pilotSession=pilot-session-1", { headers: { accept: "text/html" } }), environment, context);
+  assert.equal(foundryPilot.status, 200);
+  assert.match(await foundryPilot.text(), /PILOT SESSION ACTIVE/);
+});
+
+test("pilot persistence is consented, bounded and pseudonymous", async () => {
+  const schema = await readFile(new URL("../db/schema.ts", import.meta.url), "utf8");
+  const route = await readFile(new URL("../app/api/credit/pilot/route.ts", import.meta.url), "utf8");
+  const admin = await readFile(new URL("../app/api/credit/pilot/admin/route.ts", import.meta.url), "utf8");
+  for (const table of ["credit_pilot_invites", "credit_pilot_sessions", "credit_pilot_events", "credit_pilot_feedback", "credit_pilot_issues"]) {
+    assert.match(schema, new RegExp(table));
+  }
+  assert.match(route, /crypto\.subtle\.digest\("SHA-256"/);
+  assert.match(route, /consent\.research !== true/);
+  assert.match(route, /raw\.length > 20_000/);
+  assert.match(route, /Sign in is required for the pilot/);
+  assert.match(admin, /CREDIT_OPERATOR_USER_IDS/);
+  assert.match(admin, /participant_alias/);
+  assert.doesNotMatch(admin, /SELECT[^\n]+email/i);
+});
+
+test("Day-30 gates advance only on complete event-backed evidence", async () => {
+  const { calculatePilotEvidence } = await import("../lib/credit/pilot.ts");
+  const sessions = Array.from({ length: 5 }, (_, index) => ({
+    id: `session-${index}`,
+    participantAlias: `Founder-${index}`,
+    role: "founder",
+    ventureStage: "validation",
+    status: "completed",
+    startedAt: 1_000_000 + index * 100,
+    completedAt: 1_480_000 + index * 100,
+    projectId: `project-${index}`,
+    lastStep: "complete",
+    assistanceCount: index < 3 ? 0 : 1,
+    eventTypes: ["dossier_compiled", "evidence_reviewed", "investor_reviewed", "roadmap_reviewed", "revision_saved", "json_exported", "markdown_exported", "pilot_completed"],
+    decisionImproved: "yes",
+    decisionDescription: "The launch wedge became narrower and testable.",
+    timeSavedMinutes: 90,
+    riskExposed: "The partner dependency was previously hidden.",
+    usefulnessScore: 5,
+    clarityScore: 4,
+  }));
+  const passed = calculatePilotEvidence(sessions, 8);
+  assert.equal(passed.exitReady, true);
+  assert.equal(passed.medianMinutes, 8);
+  assert.ok(passed.gates.every(gate => gate.passed));
+  const missingExport = calculatePilotEvidence(sessions.map((session, index) => index === 0 ? { ...session, eventTypes: session.eventTypes.filter(event => event !== "json_exported") } : session), 8);
+  assert.equal(missingExport.exitReady, false);
+});

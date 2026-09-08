@@ -1,14 +1,14 @@
 # C.R.E.D.I.Tproject031 — Project Foundry
 
-**Reviewed:** 7 September 2026
+**Reviewed:** 8 September 2026
 
-**Release:** `0.3.0` private prototype
+**Release:** `0.3.1` private pilot
 
 **Promise:** From purpose to proof, then product.
 
 Project Foundry is the governed preparation layer for W8R, BTLR, OfPay and future C.R.E.D.I.T portfolio ventures. A founder supplies one brief; the system returns a versioned decision dossier, explicit evidence register, product boundary, capability graph, investor challenge, delivery tests and portable exports.
 
-The current release does **not** use the OpenAI API or any other external AI provider. The core is a deterministic rules compiler: equal normalised inputs under the same engine version produce the same fingerprint and core blueprint. A future provider may be added behind an optional adapter, but it may suggest language only—it may not relabel evidence, bypass policy, activate regulated capability or erase prior decisions.
+The current release does **not** use the OpenAI API or any other external AI provider. The core is a deterministic rules compiler: equal normalised inputs under the same engine version produce the same fingerprint and core blueprint. Release `0.3.1` adds an invitation-only pilot, pseudonymous event evidence, outcome feedback, issue reporting and an operator evidence room. A future provider may be added behind an optional adapter, but it may suggest language only—it may not relabel evidence, bypass policy, activate regulated capability or erase prior decisions.
 
 ## Source hierarchy
 
@@ -180,6 +180,9 @@ The Foundry can select these modules for a relevant project, but selection does 
 - Keyboard and screen-reader users can complete the core journey at the WCAG 2.2 AA target.
 - An integration cannot activate without permissions, data boundaries and certification tests.
 - No prototype, partner dependency or regulated feature is represented as live.
+- Invitation codes are stored only as cryptographic hashes and have bounded use and expiry.
+- Participant evidence exports omit account identifiers and email addresses.
+- The Day-30 decision is derived from recorded completion events and deliberate feedback rather than manually entered traction totals.
 
 ## Kill or pivot criteria
 
@@ -196,14 +199,14 @@ Pause expansion and redesign if any condition persists after two focused iterati
 
 | Horizon | Deliverable | Exit evidence |
 | --- | --- | --- |
-| 0–30 days | Provider-neutral compiler, founder intake, evidence ledger, exports and private deployment | Five outside founders finish a dossier and name the decision improved, time saved and risk exposed |
+| 0–30 days | Provider-neutral compiler, founder intake, evidence ledger, exports, invitation-only pilot and private operator evidence room | Five outside founders finish a dossier and name the decision improved, time saved and risk exposed; at least three finish unassisted; median completion is ten minutes or less; five complete both exports |
 | 31–60 days | Canonical schema, delivery backlog, adapter manifest and authorised sample-import harness | Two consented sample datasets reconcile with visible, merchant-approved exceptions |
 | 61–90 days | BTLR operator workflow, roles, change approvals, observability and exception ledger | Ten pilots produce measured completion, correction and decision-quality data |
 | 91–180 days | One regulated-partner sandbox or specialist-domain implementation | Counsel and partner gates, recovery, reconciliation and independent review pass |
 
 ## Release evidence
 
-Release `0.3.0` is complete only when:
+Release `0.3.1` is complete only when:
 
 - the Foundry route server-renders and compiles a blueprint through the same API used by the interface;
 - malformed briefs and oversized payloads fail intentionally;
@@ -211,5 +214,9 @@ Release `0.3.0` is complete only when:
 - TypeScript, lint, build and automated route tests pass;
 - the Git commit is pushed to the existing private development repository;
 - the owner-only Sites deployment publishes and its health is confirmed.
+- the pilot and evidence-room routes server-render;
+- unauthenticated pilot writes and non-operator evidence access fail intentionally;
+- invitation, event, feedback and issue payloads are bounded and allowlisted;
+- all pilot tables and indexes are delivered through a new append-only migration.
 
 This document is a product and control record. It is not legal, financial, accounting or tax advice.

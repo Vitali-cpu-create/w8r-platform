@@ -86,7 +86,7 @@ function validateToolBrief(input: unknown): FounderBrief {
   return compileCreditProject(source as Partial<FounderBrief>).brief;
 }
 
-export default function CreditFoundry({ viewer }: { viewer: { displayName: string; authenticated: boolean } }) {
+export default function CreditFoundry({ viewer, initialPilotSessionId = null }: { viewer: { displayName: string; authenticated: boolean }; initialPilotSessionId?: string | null }) {
   const [view, setView] = useState<View>("brief");
   const [brief, setBrief] = useState<FounderBrief>(DEFAULT_BRIEF);
   const [blueprint, setBlueprint] = useState<CreditBlueprint>(() => compileCreditProject(DEFAULT_BRIEF));
@@ -95,12 +95,38 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [persistence, setPersistence] = useState<Persistence>("loading");
   const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState("Provider-neutral blueprint ready");
+  const [notice, setNotice] = useState(initialPilotSessionId ? "Pilot mode active · actions contribute to the Day-30 evidence gates" : "Provider-neutral blueprint ready");
+  const pilotSessionId = initialPilotSessionId;
 
   const completion = useMemo(() => Math.round(Object.values(brief).filter(value => String(value).trim().length > 20).length / Object.keys(brief).length * 100), [brief]);
   const dependencies = blueprint.evidence.filter(item => item.label === "DEPENDENCY").length;
 
   const update = <K extends keyof FounderBrief>(key: K, value: FounderBrief[K]) => setBrief(current => ({ ...current, [key]: value }));
+
+  const trackPilot = useCallback(async (eventType: string, step: string, metadata: Record<string, unknown> = {}) => {
+    if (!pilotSessionId) return;
+    try {
+      await fetch("/api/credit/pilot", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "event", sessionId: pilotSessionId, eventType, step, metadata }),
+      });
+    } catch {
+      // The core Foundry remains usable if optional pilot telemetry is unavailable.
+    }
+  }, [pilotSessionId]);
+
+  const changeView = useCallback((next: View) => {
+    setView(next);
+    const eventByView: Partial<Record<View, string>> = {
+      dossier: "dossier_reviewed",
+      evidence: "evidence_reviewed",
+      investor: "investor_reviewed",
+      roadmap: "roadmap_reviewed",
+    };
+    const eventType = eventByView[next];
+    if (eventType) void trackPilot(eventType, next, { view: next });
+  }, [trackPilot]);
 
   const saveCompilation = useCallback(async (nextBrief: FounderBrief, currentProjectId: string | null = projectId) => {
     setBusy(true);
@@ -124,6 +150,12 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
         const refreshed = await fetch("/api/credit/projects").then(item => item.json()) as { projects?: ProjectSummary[] };
         setProjects(refreshed.projects ?? []);
       }
+      await trackPilot("dossier_compiled", "dossier", {
+        projectId: result.projectId,
+        version: result.version,
+        fingerprint: (result.blueprint ?? immediate).meta.fingerprint,
+      });
+      if ((result.version ?? 0) > 1) await trackPilot("revision_saved", "revision", { projectId: result.projectId, version: result.version });
       return { projectId: result.projectId, version: result.version, fingerprint: (result.blueprint ?? immediate).meta.fingerprint, persistence: result.persistence ?? "local" };
     } catch (error) {
       setPersistence("error");
@@ -132,7 +164,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
     } finally {
       setBusy(false);
     }
-  }, [projectId, version]);
+  }, [projectId, trackPilot, version]);
 
   useEffect(() => {
     fetch("/api/credit/projects").then(async response => {
@@ -141,7 +173,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
     }).then(result => {
       setProjects(result.projects ?? []);
       setPersistence(result.persistence ?? "local");
-      if (result.current) {
+      if (result.current && !pilotSessionId) {
         setBrief(result.current.brief);
         setBlueprint(result.current.blueprint);
         setProjectId(result.current.project.id);
@@ -149,7 +181,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
         setNotice(`Restored ${result.current.project.name} · version ${result.current.project.latestVersion}`);
       }
     }).catch(() => setPersistence("local"));
-  }, []);
+  }, [pilotSessionId]);
 
   useEffect(() => {
     const context = document.modelContext;
@@ -180,7 +212,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
         execute: async input => {
           const next = validateToolBrief(input);
           setBrief(next);
-          setView("dossier");
+          changeView("dossier");
           const result = await saveCompilation(next, null);
           return { status: "compiled", ...result };
         },
@@ -204,7 +236,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
     };
     void register().catch(() => undefined);
     return () => lifecycle.abort();
-  }, [blueprint, saveCompilation]);
+  }, [blueprint, changeView, saveCompilation]);
 
   const loadProject = async (id: string) => {
     setBusy(true);
@@ -234,8 +266,14 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
     setView("brief");
   };
 
-  const exportJson = () => download(`${fileBase(blueprint.brief.ventureName)}-blueprint.json`, JSON.stringify(blueprint, null, 2), "application/json");
-  const exportMarkdown = () => download(`${fileBase(blueprint.brief.ventureName)}-dossier.md`, blueprintToMarkdown(blueprint), "text/markdown");
+  const exportJson = () => {
+    void trackPilot("json_exported", "exports", { format: "json" });
+    download(`${fileBase(blueprint.brief.ventureName)}-blueprint.json`, JSON.stringify(blueprint, null, 2), "application/json");
+  };
+  const exportMarkdown = () => {
+    void trackPilot("markdown_exported", "exports", { format: "markdown" });
+    download(`${fileBase(blueprint.brief.ventureName)}-dossier.md`, blueprintToMarkdown(blueprint), "text/markdown");
+  };
 
   return <main className="credit-shell">
     <a className="skip-link" href="#credit-workspace">Skip to Foundry workspace</a>
@@ -243,7 +281,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
       <Link className="credit-brand" href="/" aria-label="W8R investor demonstration"><b>W8R</b><span>C.R.E.D.I.T<br />PROJECT FOUNDRY</span></Link>
       <div className="credit-provider"><i aria-hidden="true">◆</i><span><b>RULES ENGINE ACTIVE</b><small>External AI not connected</small></span></div>
       <nav aria-label="C.R.E.D.I.T project sections">
-        {views.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)} aria-current={view === item.id ? "page" : undefined}><i>{item.number}</i><span><b>{item.label}</b><small>{item.sub}</small></span></button>)}
+        {views.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => changeView(item.id)} aria-current={view === item.id ? "page" : undefined}><i>{item.number}</i><span><b>{item.label}</b><small>{item.sub}</small></span></button>)}
       </nav>
       <div className="credit-rail-status"><span className={`credit-save credit-save-${persistence}`}>● {persistence === "loading" ? "Connecting" : persistence === "d1" ? "Private ledger saved" : persistence === "error" ? "Save needs attention" : "Local compilation"}</span><small>{projectId ? `Version ${version} · ${blueprint.meta.fingerprint}` : "Unsaved working copy"}</small></div>
     </aside>
@@ -251,10 +289,11 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
     <section className="credit-workspace" id="credit-workspace">
       <header className="credit-topbar">
         <div><Mark tone="teal">PROJECT 031</Mark><span>Purpose → proof → product</span></div>
-        <div className="credit-top-actions"><button onClick={exportMarkdown}>Export .md</button><button onClick={exportJson}>Export JSON</button><div><small>{viewer.authenticated ? "Private founder workspace" : "Local founder sandbox"}</small><b>{viewer.displayName}</b></div></div>
+        <div className="credit-top-actions"><Link href="/credit/pilot">Founder pilot</Link><Link href="/credit/ops">Evidence room</Link><button onClick={exportMarkdown}>Export .md</button><button onClick={exportJson}>Export JSON</button><div><small>{viewer.authenticated ? "Private founder workspace" : "Local founder sandbox"}</small><b>{viewer.displayName}</b></div></div>
       </header>
 
       <div className="credit-notice" role="status"><i>✓</i><span>{notice}</span><b>{blueprint.meta.engine}</b></div>
+      {pilotSessionId && <div className="credit-pilot-strip"><span><b>PILOT SESSION ACTIVE</b> Complete the standard journey, then return to record the outcome.</span><Link href={`/credit/pilot?session=${encodeURIComponent(pilotSessionId)}`}>Return to pilot →</Link></div>}
 
       {view === "brief" && <div className="credit-screen">
         <div className="credit-hero">
@@ -288,7 +327,7 @@ export default function CreditFoundry({ viewer }: { viewer: { displayName: strin
       </div>}
 
       {view === "dossier" && <div className="credit-screen">
-        <div className="credit-section-head"><div><span>C.R.E.D.I.T DECISION DOSSIER</span><h1>{blueprint.brief.ventureName}</h1><p>{blueprint.executive.thesis}</p></div><div><Mark>{blueprint.meta.fingerprint}</Mark><button className="credit-primary" onClick={() => setView("brief")}>Revise brief</button></div></div>
+        <div className="credit-section-head"><div><span>C.R.E.D.I.T DECISION DOSSIER</span><h1>{blueprint.brief.ventureName}</h1><p>{blueprint.executive.thesis}</p></div><div><Mark>{blueprint.meta.fingerprint}</Mark><button className="credit-primary" onClick={() => changeView("brief")}>Revise brief</button></div></div>
         <article className="credit-single-slide"><header><span>THE SINGLE SLIDE</span><b>01 / CAPITAL CLARITY</b></header><div><section><small>PROBLEM</small><p>{blueprint.executive.singleSlide.problem}</p></section><section><small>SOLUTION</small><p>{blueprint.executive.singleSlide.solution}</p></section><section><small>FIRST CUSTOMER</small><p>{blueprint.executive.singleSlide.customer}</p></section><section><small>BUSINESS MODEL</small><p>{blueprint.executive.singleSlide.businessModel}</p></section><section className="accent"><small>NEXT PROOF</small><p>{blueprint.executive.singleSlide.proofNext}</p></section><section className="dark"><small>THE ASK</small><p>{blueprint.executive.singleSlide.ask}</p></section></div></article>
         <div className="credit-stage-grid">{blueprint.stages.map(stage => <article key={stage.letter}><header><i>{stage.letter}</i><div><b>{stage.name}</b><span>{stage.mandate}</span></div></header><h3>Decisions</h3>{stage.decisions.map(item => <p key={item}>✓ {item}</p>)}<h3>Questions still open</h3>{stage.openQuestions.map(item => <p className="question" key={item}>→ {item}</p>)}</article>)}</div>
         <div className="credit-boundaries"><article><span>VISION</span><h2>{blueprint.boundaries.vision}</h2></article><article><span>WEDGE</span><h2>{blueprint.boundaries.wedge}</h2></article><article><span>MVP</span>{blueprint.boundaries.mvp.map(item => <p key={item}>✓ {item}</p>)}</article><article><span>NOT NOW</span>{blueprint.boundaries.notNow.map(item => <p key={item}>× {item}</p>)}</article></div>
